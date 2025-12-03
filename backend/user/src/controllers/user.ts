@@ -24,7 +24,7 @@ export const loginUser = TryCatch(async (req, res) => {
 
   const message = {
     to: email,
-    superject: "Your OTP Code",
+    subject: "Your OTP Code",
     body: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
   };
 
