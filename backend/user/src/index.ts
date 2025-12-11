@@ -13,14 +13,40 @@ connectRabbitMQ();
 if (!process.env.REDIS_URL) {
   throw new Error("Redis URL not found");
 }
+
 export const redisClient = createClient({
   url: process.env.REDIS_URL,
+  socket: {
+    reconnectStrategy: (retries) => {
+      if (retries > 10) {
+        console.log("Too many retries on Redis. Stopping reconnect.");
+        return new Error("Too many retries");
+      }
+      return retries * 500; // Exponential backoff
+    },
+  },
+});
+
+// Handle Redis errors gracefully
+redisClient.on("error", (error) => {
+  console.error("Redis Client Error:", error.message);
+});
+
+redisClient.on("reconnecting", () => {
+  console.log("Redis client reconnecting...");
+});
+
+redisClient.on("ready", () => {
+  console.log("Redis client is ready");
 });
 
 redisClient
   .connect()
-  .then(() => console.log("connected to Redis"))
-  .catch((error) => console.log(error));
+  .then(() => console.log("Connected to Redis successfully"))
+  .catch((error) => {
+    console.error("Failed to connect to Redis:", error.message);
+    console.log("Application will continue without Redis cache");
+  });
 
 const app = express();
 
