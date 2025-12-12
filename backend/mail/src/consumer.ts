@@ -3,20 +3,6 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  // port: 587,
-  port: 2525,
-  secure: false,
-  auth: {
-    user: process.env.USER,
-    pass: process.env.PASS,
-  },
-  pool: true, // Keep connection open
-  maxConnections: 1,
-  connectionTimeout: 10000,
-});
-
 export const startSendOtpConsumer = async function () {
   try {
     // const connection = await amqp.connect({
@@ -29,14 +15,23 @@ export const startSendOtpConsumer = async function () {
     const connection = await amqp.connect(process.env.RABBITMQ_URL || "");
     const channel = await connection.createChannel();
     await channel.assertQueue("send-otp", { durable: true });
-    channel.prefetch(1);
     console.log("✅ Mail service consumer started,listening for otp emails");
     const queueName = "send-otp";
     channel.consume(queueName, async (msg) => {
       if (msg) {
         try {
           const { to, subject, body } = JSON.parse(msg.content.toString());
-
+          const transporter = nodemailer.createTransport({
+            host: "smtp-relay.brevo.com",
+            port: 587,
+            secure: false,
+            auth: {
+              user: process.env.USER,
+              pass: process.env.PASS,
+            },
+            pool: true, // Keep connection open
+            maxConnections: 2,
+          });
           await transporter.sendMail({
             from: "student<pavanprasanth48850@gmail.com>",
             to,
