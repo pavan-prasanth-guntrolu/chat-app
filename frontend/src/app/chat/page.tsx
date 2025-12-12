@@ -83,7 +83,7 @@ function ChatApp() {
 
   const moveChatToTop = (
     chatId: string,
-    newMessage: any,
+    newMessage: { text: string; sender: string },
     updatedUnseenCount = true
   ) => {
     setChats((prev) => {
@@ -110,7 +110,7 @@ function ChatApp() {
             unseenCount:
               updatedUnseenCount && newMessage.sender !== loggedInUser?._id
                 ? (moveChat.chat.unseenCount || 0) + 1
-                : moveChat.chat,
+                : moveChat.chat.unseenCount || 0,
           },
         };
         updatedChats.unshift(updatedChat);
@@ -156,12 +156,15 @@ function ChatApp() {
       setSelectedUser(data.chatId);
       setShowAllUsers(false);
       await fetchChats();
-    } catch (error) {
+    } catch {
       toast.error("Failed to start chat");
     }
   }
 
-  const handleMessageSend = async (e: any, imageFile?: File | null) => {
+  const handleMessageSend = async (
+    e: React.FormEvent,
+    imageFile?: File | null
+  ) => {
     e.preventDefault();
     if (!message.trim() && !imageFile) return;
 
