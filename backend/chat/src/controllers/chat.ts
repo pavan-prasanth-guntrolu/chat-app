@@ -7,7 +7,7 @@ import { getReceiverSocketId, io } from "../config/socket.js";
 
 export const createNewChat = TryCatch(
   async (req: AuthenticatedRequest, res) => {
-    const userId = req.user?._id;
+    const userId = req.user?._id?.toString();
     const { otherUserId } = req.body;
 
     if (!otherUserId) {
@@ -41,7 +41,7 @@ export const createNewChat = TryCatch(
 );
 
 export const getAllChats = TryCatch(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user?._id;
+  const userId = req.user?._id?.toString();
 
   if (!userId) {
     res.status(400).json({
@@ -54,7 +54,9 @@ export const getAllChats = TryCatch(async (req: AuthenticatedRequest, res) => {
 
   const chatWithUserData = await Promise.all(
     chats.map(async (chat) => {
-      const OtherUserId = chat.users.find((id) => id !== userId);
+      const OtherUserId = chat.users.find(
+        (id) => id.toString() !== userId.toString()
+      );
 
       const unseenCount = await Messages.countDocuments({
         chatId: chat._id,
@@ -98,7 +100,7 @@ export const getAllChats = TryCatch(async (req: AuthenticatedRequest, res) => {
 });
 
 export const sendMessage = TryCatch(async (req: AuthenticatedRequest, res) => {
-  const senderId = req.user?._id;
+  const senderId = req.user?._id?.toString();
   const { chatId, text } = req.body;
   const imageFile = req.file;
 
@@ -233,7 +235,7 @@ export const sendMessage = TryCatch(async (req: AuthenticatedRequest, res) => {
 
 export const getMessagesByChat = TryCatch(
   async (req: AuthenticatedRequest, res) => {
-    const userId = req.user?._id;
+    const userId = req.user?._id?.toString();
     const { chatId } = req.params;
 
     if (!userId) {
@@ -290,7 +292,9 @@ export const getMessagesByChat = TryCatch(
 
     const messages = await Messages.find({ chatId }).sort({ createdAt: 1 });
 
-    const otherUserId = chat.users.find((id) => id !== userId);
+    const otherUserId = chat.users.find(
+      (id) => id.toString() !== userId.toString()
+    );
 
     try {
       const { data } = await axios.get(
