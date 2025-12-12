@@ -31,7 +31,7 @@ export const startSendOtpConsumer = async function () {
             },
           });
           await transporter.sendMail({
-            from: "Chat App",
+            from: "student<pavanprasanth48850@gmail.com>",
             to,
             subject,
             text: body,
