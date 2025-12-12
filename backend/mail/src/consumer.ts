@@ -31,9 +31,9 @@ export const startSendOtpConsumer = async function () {
             },
             logger: true,
             debug: true,
-            connectionTimeout: 1000000000000000, // 10 seconds
-            greetingTimeout: 1000000000000000,
-            socketTimeout: 1000000000000000,
+            connectionTimeout: 10000, // 10 seconds
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
           });
           await transporter.sendMail({
             from: "Chat App",
