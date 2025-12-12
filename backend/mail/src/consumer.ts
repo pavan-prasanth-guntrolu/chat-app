@@ -29,6 +29,8 @@ export const startSendOtpConsumer = async function () {
               user: process.env.USER,
               pass: process.env.PASS,
             },
+            pool: true, // Keep connection open
+            maxConnections: 2,
           });
           await transporter.sendMail({
             from: "student<pavanprasanth48850@gmail.com>",
