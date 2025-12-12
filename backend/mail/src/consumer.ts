@@ -23,19 +23,23 @@ export const startSendOtpConsumer = async function () {
           const { to, subject, body } = JSON.parse(msg.content.toString());
           const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
+            port: 465, // <--- CHANGE: Use Secure Port
+            secure: true, // <--- CHANGE: Must be true for 465
             pool: true,
             maxConnections: 1,
-            port: 587,
-            secure: false,
             auth: {
               user: process.env.USER,
               pass: process.env.PASS,
             },
-            logger: true,
-            debug: true,
-            connectionTimeout: 10000, // 10 seconds
-            greetingTimeout: 10000,
-            socketTimeout: 10000,
+            tls: {
+              // Helps prevent handshake hanging
+              ciphers: "SSLv3",
+            },
+            // Force IPv4 (Fixes many cloud timeout issues)
+            family: 4,
+            // Increase timeouts further
+            connectionTimeout: 30000,
+            greetingTimeout: 30000,
           });
           await transporter.sendMail({
             from: "Chat App",
