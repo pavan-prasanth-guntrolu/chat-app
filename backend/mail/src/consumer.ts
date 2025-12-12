@@ -5,13 +5,14 @@ dotenv.config();
 
 export const startSendOtpConsumer = async function () {
   try {
-    const connection = await amqp.connect({
-      protocol: "amqp",
-      hostname: process.env.RABBITMQ_HOST,
-      port: 5672,
-      username: process.env.RABBITMQ_USERNAME,
-      password: process.env.RABBITMQ_PASSWORD,
-    });
+    // const connection = await amqp.connect({
+    //   protocol: "amqp",
+    //   hostname: process.env.RABBITMQ_HOST,
+    //   port: 5672,
+    //   username: process.env.RABBITMQ_USERNAME,
+    //   password: process.env.RABBITMQ_PASSWORD,
+    // });
+    const connection = await amqp.connect(process.env.RABBITMQ_URL || "");
     const channel = await connection.createChannel();
     await channel.assertQueue("send-otp", { durable: true });
     console.log("✅ Mail service consumer started,listening for otp emails");
