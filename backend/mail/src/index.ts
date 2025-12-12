@@ -7,12 +7,11 @@ const app = express();
 
 startSendOtpConsumer();
 
-const PORT = process.env.PORT;
-
-// 2. Create a dummy endpoint for health checks
 app.get("/", (req, res) => {
-  res.send("Mail Service is running and listening to RabbitMQ");
+  res.send("Mail Service Running");
 });
+
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log("server is running on port " + PORT);
