@@ -10,7 +10,7 @@ const PORT = Number(process.env.PORT || 4000);
 startSendOtpConsumer();
 
 app.get("/", (req, res) => {
-  res.send("Mail Service Running");
+  res.status(200).send("✅ Mail microservice is running. Don't sleep!");
 });
 
 app.listen(PORT, () => {

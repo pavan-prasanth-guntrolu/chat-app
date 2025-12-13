@@ -15,6 +15,10 @@ app.use("/api/v1", chatRoutes);
 
 const port = process.env.PORT;
 
+app.get("/", (req, res) => {
+  res.status(200).send("✅ Chat microservice is running. Don't sleep!");
+});
+
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

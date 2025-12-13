@@ -57,6 +57,10 @@ app.use("/api/v1", userRoutes);
 
 const port = process.env.PORT;
 
+app.get("/", (req, res) => {
+  res.status(200).send("✅ User microservice is running. Don't sleep!");
+});
+
 app.listen(port, () => {
   console.log("User service is running on port " + port);
 });
