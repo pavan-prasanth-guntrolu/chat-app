@@ -3,6 +3,19 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 2525,
+  secure: false,
+  auth: {
+    user: process.env.USER,
+    pass: process.env.PASS,
+  },
+  pool: true, // Keep connection open
+  maxConnections: 2,
+  connectionTimeout: 10000,
+});
+
 export const startSendOtpConsumer = async function () {
   try {
     // const connection = await amqp.connect({
@@ -21,17 +34,6 @@ export const startSendOtpConsumer = async function () {
       if (msg) {
         try {
           const { to, subject, body } = JSON.parse(msg.content.toString());
-          const transporter = nodemailer.createTransport({
-            host: "smtp-relay.brevo.com",
-            port: 587,
-            secure: false,
-            auth: {
-              user: process.env.USER,
-              pass: process.env.PASS,
-            },
-            pool: true, // Keep connection open
-            maxConnections: 2,
-          });
           await transporter.sendMail({
             from: "student<pavanprasanth48850@gmail.com>",
             to,
